@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Locations table</h1>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Status</td>
+        <td>Description</td>
+
+    </tr>
+    {% for sensor in object_list %}
+    <tr>
+        <td>{{ sensor.name }}</td>
+        <td>{{ sensor.status }}</td>
+        <td>{{ sensor.description }}</td>
+        <td><a href="{% url 'data' sensor.id %}">History</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'locations' %}">Back to locations</a>
+{% endblock %}

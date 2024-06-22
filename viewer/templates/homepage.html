@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{% url 'locations' %}">LogIn</a>
+<a href="{% url 'locations' %}">Locations</a>
+<br>
+<a href="{% url 'home' %}">Add new</a>
+<br>
+<a href="{% url 'home' %}">Edit existed</a>
+<br>
+<a href="{% url 'home' %}">Delete</a>
 
 {% endblock %}

@@ -1,4 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
+<h1>Locations table</h1>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Status</td>
+        <td>Description</td>
 
+    </tr>
+    {% for location in object_list %}
+    <tr>
+        <td>{{ location.name }}</td>
+        <td>{{ location.status }}</td>
+        <td>{{ location.description }}</td>
+        <td><a href="{% url 'sensors' location.id %}">Sensors</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'home' %}">Back home</a>
 {% endblock %}
