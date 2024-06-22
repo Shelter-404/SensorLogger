@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import django.contrib.auth.views as auth_views
-from viewer.views import SignUpView, StartView, HomeView, LocationView, LocationAddView, SensorView, DataView
+from viewer.views import SignUpView, StartView, HomeView, LocationView, LocationAddView, SensorView, DataView, ControllerAddView, add_new, SensorAddView
 from django.shortcuts import redirect
 
 urlpatterns = [
@@ -35,7 +35,10 @@ urlpatterns = [
     path('index/', StartView.as_view(), name="index"),
     path('home/', HomeView.as_view(), name="home"),
     path('locations/', LocationView.as_view(), name="locations"),
-    path('locations/add/', LocationAddView.as_view(), name='add_location'),
+    path('add/location', LocationAddView.as_view(), name='add_location'),
     path('sensors/<int:location_id>', SensorView.as_view(), name='sensors'),
     path('sensors/data/<int:sensor_id>', DataView.as_view(), name='data'),
+    path('add/controller', ControllerAddView.as_view(), name='add_controller'),
+    path('add/sensor', SensorAddView.as_view(), name='add_sensor'),
+    path('add/', add_new, name='adding'),
 ]

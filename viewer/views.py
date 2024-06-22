@@ -41,6 +41,40 @@ class LocationAddView(LoginRequiredMixin, CreateView):
         form.instance.status = status
         return super().form_valid(form)
 
+class ControllerAddView(LoginRequiredMixin, CreateView):
+    model = Controller
+    fields = ['name', 'ip_address', 'location', 'description']
+    template_name = "form.html"
+    success_url = reverse_lazy("home")
+    # permission_required = "viewer.add_controller"
+
+    def form_valid(self, form):
+        # Create a new Status object
+        status = Status.objects.create(
+            added_by=self.request.user,
+            modified_by=self.request.user
+        )
+        # Assign the created status to the location
+        form.instance.status = status
+        return super().form_valid(form)
+
+class SensorAddView(LoginRequiredMixin, CreateView):
+    model = Sensor
+    fields = ['name', 'address', 'controller', 'description']
+    template_name = "form.html"
+    success_url = reverse_lazy("home")
+    #permission_required = "viewer.add_controller"
+
+    def form_valid(self, form):
+        # Create a new Status object
+        status = Status.objects.create(
+            added_by=self.request.user,
+            modified_by=self.request.user
+        )
+        # Assign the created status to the location
+        form.instance.status = status
+        return super().form_valid(form)
+
 class SensorView(LoginRequiredMixin, ListView):
     template_name = "sensors.html"
     model = Sensor
@@ -56,3 +90,6 @@ class DataView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         sensor_id = self.kwargs['sensor_id']
         return ControllerData.objects.filter(controller__sensor=sensor_id)
+
+def add_new(request):
+    return render(request, 'adding.html')
