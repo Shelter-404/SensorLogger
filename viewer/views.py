@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .forms import SignUpForm, LocationForm
+from .forms import SignUpForm, ControllerCreateForm, SensorCreateForm
 from .models import Location, Status, Sensor, Controller, ControllerData
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,16 +16,17 @@ class StartView(View):
         return render(request, template_name="index.html")
 
 class HomeView(LoginRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         return render(request, template_name="homepage.html")
 
-class ManageView(LoginRequiredMixin, View):
-    locations = Location.objects.all()
-    controllers = Controller.objects.all()
-    sensors = Sensor.objects.all()
-    def get(self, request, *args, **kwargs):
-        return render(request, template_name="management.html", context={'locations': self.locations, 'controllers': self.controllers, 'sensors': self.sensors})
+
+# For future features
+# class ManageView(LoginRequiredMixin, View):
+#     locations = Location.objects.all()
+#     controllers = Controller.objects.all()
+#     sensors = Sensor.objects.all()
+#     def get(self, request, *args, **kwargs):
+#         return render(request, template_name="management.html", context={'locations': self.locations, 'controllers': self.controllers, 'sensors': self.sensors})
 
 class LocationView(LoginRequiredMixin, ListView):
     template_name = "locations.html"
@@ -39,52 +40,35 @@ class LocationAddView(LoginRequiredMixin, CreateView):
     model = Location
     fields = '__all__'
     template_name = "form.html"
-    success_url = reverse_lazy("locations")
+    success_url = reverse_lazy("manage")
     # permission_required = "viewer.add_location"
 
-    def form_valid(self, form):
-        # Create a new Status object
-        status = Status.objects.create(
-            added_by=self.request.user,
-            modified_by=self.request.user
-        )
-        # Assign the created status to the location
-        form.instance.status = status
-        return super().form_valid(form)
+
 
 class ControllerAddView(LoginRequiredMixin, CreateView):
     model = Controller
-    fields = ['name', 'ip_address', 'location', 'description']
+    form_class = ControllerCreateForm
     template_name = "form.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("manage")
     # permission_required = "viewer.add_controller"
 
-    def form_valid(self, form):
-        # Create a new Status object
-        status = Status.objects.create(
-            added_by=self.request.user,
-            modified_by=self.request.user
-        )
-        # Assign the created status to the location
-        form.instance.status = status
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     # Create a new Status object
+    #     status = Status.objects.create(
+    #         added_by=self.request.user,
+    #         modified_by=self.request.user
+    #     )
+    #     # Assign the created status to the location
+    #     form.instance.status = status
+    #     return super().form_valid(form)
 
 class SensorAddView(LoginRequiredMixin, CreateView):
     model = Sensor
-    fields = ['name', 'address', 'controller', 'description']
     template_name = "form.html"
-    success_url = reverse_lazy("home")
+    form_class = SensorCreateForm
+    success_url = reverse_lazy("manage")
     #permission_required = "viewer.add_controller"
 
-    def form_valid(self, form):
-        # Create a new Status object
-        status = Status.objects.create(
-            added_by=self.request.user,
-            modified_by=self.request.user
-        )
-        # Assign the created status to the location
-        form.instance.status = status
-        return super().form_valid(form)
 
 class SensorView(LoginRequiredMixin, ListView):
     template_name = "sensors.html"
@@ -106,7 +90,7 @@ class DataView(LoginRequiredMixin, ListView):
 class LocationUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'form.html'
     model = Location
-    form_class = LocationForm
+    fields = '__all__'
     success_url = reverse_lazy('locations')
 
 # class ControllerUpdateView(LoginRequiredMixin, UpdateView):

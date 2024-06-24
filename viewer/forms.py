@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, CharField, Textarea, ModelChoiceField
 from django.db.transaction import atomic
-from .models import Location, Status
+from .models import Location, Status, Controller, Sensor
 
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -13,16 +13,16 @@ class SignUpForm(UserCreationForm):
         return super().save(commit)
 
 
-class LocationForm(ModelForm):
-
-
-    #status_name = ModelChoiceField(queryset=Status.objects.all())
-    # status_name = CharField(max_length=3)
-    name = CharField()
-    description = Textarea()
-    class Meta:
-        model = Location
-        fields = ["name", "description", 'status']
+# class LocationForm(ModelForm):
+#
+#
+#     #status_name = ModelChoiceField(queryset=Status.objects.all())
+#     # status_name = CharField(max_length=3)
+#     name = CharField()
+#     description = Textarea()
+#     class Meta:
+#         model = Location
+#         fields = ["name", "description", 'status']
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -44,9 +44,24 @@ class LocationForm(ModelForm):
     #     return location
 
 
+class ControllerCreateForm(ModelForm):
+    class Meta:
+        model = Controller
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["location"].queryset = Location.objects.exclude(status__name="Deleted")
 
 
+class SensorCreateForm(ModelForm):
+    class Meta:
+        model = Sensor
+        fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["controller"].queryset = Controller.objects.exclude(location__status__name="Deleted")
 
 
 
