@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from .forms import SignUpForm, LocationForm
 from .models import Location, Status, Sensor, Controller, ControllerData
 from django.urls import reverse_lazy
@@ -16,17 +16,28 @@ class StartView(View):
         return render(request, template_name="index.html")
 
 class HomeView(LoginRequiredMixin, View):
+
     def get(self, request, *args, **kwargs):
         return render(request, template_name="homepage.html")
+
+class ManageView(LoginRequiredMixin, View):
+    locations = Location.objects.all()
+    controllers = Controller.objects.all()
+    sensors = Sensor.objects.all()
+    def get(self, request, *args, **kwargs):
+        return render(request, template_name="management.html", context={'locations': self.locations, 'controllers': self.controllers, 'sensors': self.sensors})
 
 class LocationView(LoginRequiredMixin, ListView):
     template_name = "locations.html"
     model = Location
-    #permission_required = "viewer.view_location"
+    context_object_name = 'locations'
+
+    def get_queryset(self):
+        return Location.objects.exclude(status__name='Deleted')
 
 class LocationAddView(LoginRequiredMixin, CreateView):
     model = Location
-    fields = ['name', 'description']
+    fields = '__all__'
     template_name = "form.html"
     success_url = reverse_lazy("locations")
     # permission_required = "viewer.add_location"
@@ -91,5 +102,21 @@ class DataView(LoginRequiredMixin, ListView):
         sensor_id = self.kwargs['sensor_id']
         return ControllerData.objects.filter(controller__sensor=sensor_id)
 
-def add_new(request):
-    return render(request, 'adding.html')
+
+class LocationUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'form.html'
+    model = Location
+    form_class = LocationForm
+    success_url = reverse_lazy('locations')
+
+# class ControllerUpdateView(LoginRequiredMixin, UpdateView):
+#     template_name = 'form.html'
+#     model = Controller
+#     fields = ['name', 'description']
+#     success_url = reverse_lazy('manage')
+#
+# class SensorUpdateView(LoginRequiredMixin, UpdateView):
+#     template_name = 'form.html'
+#     model = Sensor
+#     fields = ['name', 'description']
+#     success_url = reverse_lazy('manage')

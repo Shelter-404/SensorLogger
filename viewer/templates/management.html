@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{% url 'add_location' %}">Add new location</a>
+<br>
+<a href="{% url 'add_controller' %}">Add new controller</a>
+<br>
+<!--<a href="{% url 'add_sensor' %}">Add new sensor</a>-->
+<!--<br>-->
+
+
+<!--    <select>-->
+<!--        <option value="">Select a location for edit</option>-->
+<!--        {% for location in locations %}-->
+<!--            <option value="{{ location.pk }}">{{ location.name }}</option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+<!--    <a href="{% url 'edit_location' 1 %}">Edit location</a>-->
+
+
+
+{% endblock %}

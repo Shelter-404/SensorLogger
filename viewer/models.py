@@ -7,23 +7,15 @@ User = get_user_model()
 # Create your models here.
 
 class Status(models.Model):
-    class StatusChoice(models.TextChoices):
-        ENABLE = "ON", "Enable"
-        DISABLE = "OFF", "Disable"
-        DELETED = "DEL", "Deleted"
 
-    name = models.CharField(
-        max_length=3,
-        choices=StatusChoice.choices,
-        default=StatusChoice.ENABLE,
-    )
+    name = models.CharField(max_length=255)
     added = models.DateTimeField(auto_now_add=True)
     added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="status_add")
     modified = models.DateTimeField(auto_now=True)
     modified_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="status_modified")
 
     def __str__(self):
-        return f"{self.get_name_display()}"
+        return f"{self.name}"
 
 
 class Location(models.Model):
