@@ -11,14 +11,6 @@ class SignUpView(CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy("home")
 
-class StartView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, template_name="index.html")
-
-class HomeView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        return render(request, template_name="homepage.html")
-
 
 # For future features
 # class ManageView(LoginRequiredMixin, View):

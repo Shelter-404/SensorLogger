@@ -16,15 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 import django.contrib.auth.views as auth_views
-from viewer.views import SignUpView, StartView, HomeView, LocationView, LocationAddView, SensorView, DataView, ControllerAddView, SensorAddView, LocationUpdateView
-from django.shortcuts import redirect
+from viewer import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/login/', auth_views.LoginView.as_view(), name="login"),
-    path('accounts/signup/', SignUpView.as_view(), name="signup"),
+    path('accounts/signup/', views.SignUpView.as_view(), name="signup"),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('accounts/password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('accounts/password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
@@ -33,15 +33,15 @@ urlpatterns = [
     path('accounts/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('accounts/reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('', lambda request: redirect('index', permanent=False)),
-    path('index/', StartView.as_view(), name="index"),
-    path('home/', HomeView.as_view(), name="home"),
+    path('index/', TemplateView.as_view(template_name="index.html"), name="index"),
+    path('home/', TemplateView.as_view(template_name="homepage.html"), name="home"),
     # path('home/manage', views.ManageView.as_view(), name="manage"), reserved for future
     path('home/manage', TemplateView.as_view(template_name="management.html"), name="manage"),
-    path('locations/', LocationView.as_view(), name="locations"),
-    path('add/location', LocationAddView.as_view(), name='add_location'),
-    path('sensors/<int:location_id>', SensorView.as_view(), name='sensors'),
-    path('sensors/data/<int:sensor_id>', DataView.as_view(), name='data'),
-    path('add/controller', ControllerAddView.as_view(), name='add_controller'),
-    path('add/sensor', SensorAddView.as_view(), name='add_sensor'),
-    path('edit/location/<int:pk>', LocationUpdateView.as_view(), name='edit_location'),
+    path('locations/', views.LocationView.as_view(), name="locations"),
+    path('add/location', views.LocationAddView.as_view(), name='add_location'),
+    path('sensors/<int:location_id>', views.SensorView.as_view(), name='sensors'),
+    path('sensors/data/<int:sensor_id>', views.DataView.as_view(), name='data'),
+    path('add/controller', views.ControllerAddView.as_view(), name='add_controller'),
+    path('add/sensor', views.SensorAddView.as_view(), name='add_sensor'),
+    path('edit/location/<int:pk>', views.LocationUpdateView.as_view(), name='edit_location'),
 ]
