@@ -37,6 +37,7 @@ urlpatterns = [
     path('home/', TemplateView.as_view(template_name="homepage.html"), name="home"),
     # path('home/manage', views.ManageView.as_view(), name="manage"), reserved for future
     path('home/manage', TemplateView.as_view(template_name="management.html"), name="manage"),
+    path('manage/controller', views.ControllerView.as_view(), name="controller_list"),
     path('locations/', views.LocationView.as_view(), name="locations"),
     path('add/location', views.LocationAddView.as_view(), name='add_location'),
     path('sensors/<int:location_id>', views.SensorView.as_view(), name='sensors'),
@@ -44,4 +45,5 @@ urlpatterns = [
     path('add/controller', views.ControllerAddView.as_view(), name='add_controller'),
     path('add/sensor', views.SensorAddView.as_view(), name='add_sensor'),
     path('edit/location/<int:pk>', views.LocationUpdateView.as_view(), name='edit_location'),
+    path('edit/controller/<int:pk>', views.ControllerUpdateView.as_view(), name='edit_controller'),
 ]

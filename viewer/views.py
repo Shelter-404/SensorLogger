@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .forms import SignUpForm, ControllerCreateForm, SensorCreateForm
+from .forms import SignUpForm, ControllerCreateForm, SensorCreateForm, LocationForm
 from .models import Location, Status, Sensor, Controller, ControllerData
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -30,7 +30,7 @@ class LocationView(LoginRequiredMixin, ListView):
 
 class LocationAddView(LoginRequiredMixin, CreateView):
     model = Location
-    fields = '__all__'
+    form_class = LocationForm
     template_name = "form.html"
     success_url = reverse_lazy("manage")
     # permission_required = "viewer.add_location"
@@ -82,15 +82,23 @@ class DataView(LoginRequiredMixin, ListView):
 class LocationUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'form.html'
     model = Location
-    fields = '__all__'
+    form_class = LocationForm
     success_url = reverse_lazy('locations')
 
-# class ControllerUpdateView(LoginRequiredMixin, UpdateView):
-#     template_name = 'form.html'
-#     model = Controller
-#     fields = ['name', 'description']
-#     success_url = reverse_lazy('manage')
-#
+class ControllerView(LoginRequiredMixin, ListView):
+    template_name = "controller_list.html"
+    model = Controller
+    context_object_name = 'controllers'
+
+    def get_queryset(self):
+        return Controller.objects.exclude(status__name='Deleted')
+
+class ControllerUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'form.html'
+    model = Controller
+    form_class = ControllerCreateForm
+    success_url = reverse_lazy('manage')
+
 # class SensorUpdateView(LoginRequiredMixin, UpdateView):
 #     template_name = 'form.html'
 #     model = Sensor

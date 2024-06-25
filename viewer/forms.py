@@ -43,6 +43,15 @@ class SignUpForm(UserCreationForm):
     #
     #     return location
 
+class LocationForm(ModelForm):
+    class Meta:
+        model = Location
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["status"].queryset = Status.objects.exclude(name="Deleted")
+
 
 class ControllerCreateForm(ModelForm):
     class Meta:
@@ -52,7 +61,7 @@ class ControllerCreateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["location"].queryset = Location.objects.exclude(status__name="Deleted")
-
+        self.fields["status"].queryset = Status.objects.exclude(name="Deleted")
 
 class SensorCreateForm(ModelForm):
     class Meta:
@@ -61,8 +70,8 @@ class SensorCreateForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["controller"].queryset = Controller.objects.exclude(location__status__name="Deleted")
-
+        self.fields["controller"].queryset = Controller.objects.exclude(status__name="Deleted")
+        self.fields["status"].queryset = Status.objects.exclude(name="Deleted")
 
 
 
