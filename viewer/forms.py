@@ -63,7 +63,7 @@ class ControllerCreateForm(ModelForm):
         self.fields["location"].queryset = Location.objects.exclude(status__name="Deleted")
         self.fields["status"].queryset = Status.objects.exclude(name="Deleted")
 
-class SensorCreateForm(ModelForm):
+class SensorForm(ModelForm):
     class Meta:
         model = Sensor
         fields = '__all__'

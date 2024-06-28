@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .forms import SignUpForm, ControllerCreateForm, SensorCreateForm, LocationForm
+from django.http import HttpResponseRedirect
+from .forms import SignUpForm, ControllerCreateForm, SensorForm, LocationForm
 from .models import Location, Status, Sensor, Controller, ControllerData
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -57,7 +58,7 @@ class ControllerAddView(LoginRequiredMixin, CreateView):
 class SensorAddView(LoginRequiredMixin, CreateView):
     model = Sensor
     template_name = "form.html"
-    form_class = SensorCreateForm
+    form_class = SensorForm
     success_url = reverse_lazy("manage")
     #permission_required = "viewer.add_controller"
 
@@ -68,7 +69,9 @@ class SensorView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         location_id = self.kwargs['location_id']
-        return Sensor.objects.filter(controller__location=location_id)
+        sensors_for_location = Sensor.objects.filter(controller__location=location_id)
+        return sensors_for_location.exclude(status__name='Deleted')
+    
 
 class DataView(LoginRequiredMixin, ListView):
     template_name = "data_list.html"
@@ -99,8 +102,22 @@ class ControllerUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ControllerCreateForm
     success_url = reverse_lazy('manage')
 
-# class SensorUpdateView(LoginRequiredMixin, UpdateView):
-#     template_name = 'form.html'
-#     model = Sensor
-#     fields = ['name', 'description']
-#     success_url = reverse_lazy('manage')
+class SensorUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'form.html'
+    model = Sensor
+    form_class = SensorForm
+    success_url = reverse_lazy('manage')
+
+
+
+class CustomSensorDeleteView(LoginRequiredMixin, DeleteView):
+    model = Sensor
+    success_url ="/" 
+    template_name = "confirm_delete.html"
+
+    def form_valid(self, form, **kwargs):
+        sensor_id = self.kwargs['pk']
+        object_for_delete = Sensor.objects.filter(id=sensor_id)
+        delete_status = Status.objects.get(name="Deleted")
+        object_for_delete.update(status=delete_status)
+        return HttpResponseRedirect(self.success_url)

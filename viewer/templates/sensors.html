@@ -14,7 +14,8 @@
         <td>{{ sensor.status }}</td>
         <td>{{ sensor.description }}</td>
         <td><a href="{% url 'data' sensor.id %}">History</a></td>
-<!--        <td><a href="{% url 'edit_location' sensor.pk %}">Edit sensor</a></td>-->
+       <td><a href="{% url 'edit_sensor' sensor.pk %}">Edit sensor</a></td>
+       <td><a href="{% url 'delete_sensor' sensor.pk %}">Delete sensor</a></td>
     </tr>
     {% endfor %}
 </table>
