@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, ControllerCreateForm, SensorForm, LocationForm
 from .models import Location, Status, Sensor, Controller, ControllerData
+from .decorators import qualification_required
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
@@ -109,7 +112,7 @@ class SensorUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('manage')
 
 
-
+@method_decorator([login_required, qualification_required], name='dispatch')
 class CustomSensorDeleteView(LoginRequiredMixin, DeleteView):
     model = Sensor
     success_url ="/" 
