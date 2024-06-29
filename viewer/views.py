@@ -105,7 +105,8 @@ class ControllerUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ControllerCreateForm
     success_url = reverse_lazy('manage')
 
-class SensorUpdateView(LoginRequiredMixin, UpdateView):
+@method_decorator([login_required, qualification_required], name='dispatch')
+class SensorUpdateView(UpdateView):
     template_name = 'form.html'
     model = Sensor
     form_class = SensorForm
@@ -113,7 +114,7 @@ class SensorUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @method_decorator([login_required, qualification_required], name='dispatch')
-class CustomSensorDeleteView(LoginRequiredMixin, DeleteView):
+class CustomSensorDeleteView(DeleteView):
     model = Sensor
     success_url ="/" 
     template_name = "confirm_delete.html"
@@ -124,3 +125,5 @@ class CustomSensorDeleteView(LoginRequiredMixin, DeleteView):
         delete_status = Status.objects.get(name="Deleted")
         object_for_delete.update(status=delete_status)
         return HttpResponseRedirect(self.success_url)
+
+#class DataView(ListView):
