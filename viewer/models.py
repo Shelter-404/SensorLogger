@@ -56,3 +56,7 @@ class ControllerData(models.Model):
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE, related_name="data")
     data = models.JSONField(null=False, blank=False)
     added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.added}"
+

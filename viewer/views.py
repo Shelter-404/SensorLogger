@@ -73,16 +73,49 @@ class SensorView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         location_id = self.kwargs['location_id']
         sensors_for_location = Sensor.objects.filter(controller__location=location_id)
-        return sensors_for_location.exclude(status__name='Deleted')
-    
+        sensors_to_show = sensors_for_location.exclude(status__name='Deleted')
+        print(sensors_to_show)
+        return sensors_to_show
+
+
+
 
 class DataView(LoginRequiredMixin, ListView):
     template_name = "data_list.html"
     model = ControllerData
+    context_object_name = 'obj_list'
 
     def get_queryset(self):
-        sensor_id = self.kwargs['sensor_id']
+        sensor_id = self.kwargs['pk']
         return ControllerData.objects.filter(controller__sensor=sensor_id)
+
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     sensor_id = self.kwargs['pk']
+    #     sensor = Sensor.objects.get(id=sensor_id)
+    #     queryset = self.get_queryset()
+    #     filtered_data = {}
+    #     for data_instance in queryset:
+    #         filtered_data[data_instance.id] = data_instance.get_filtered_data(sensor.name)
+    #
+    #     context['data'] = filtered_data
+    #     print(context)
+    #
+    #     return context
+    def get_context_data(self, **kwargs):
+
+
+        context = super().get_context_data(**kwargs)
+        sensor_id = self.kwargs['pk']
+        sensor = Sensor.objects.get(id=sensor_id)
+        context['name_sensor'] = sensor.name
+        return context
+
+
+
+
+
 
 
 class LocationUpdateView(LoginRequiredMixin, UpdateView):
@@ -126,4 +159,4 @@ class CustomSensorDeleteView(DeleteView):
         object_for_delete.update(status=delete_status)
         return HttpResponseRedirect(self.success_url)
 
-#class DataView(ListView):
+
