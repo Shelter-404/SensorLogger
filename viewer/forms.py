@@ -1,10 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, CharField, Textarea, ModelChoiceField
 from django.db.transaction import atomic
+from django.contrib.auth import get_user_model
 from .models import Location, Status, Controller, Sensor
 
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
+        model = get_user_model()
         fields = ['username', "first_name", 'email']
 
     @atomic

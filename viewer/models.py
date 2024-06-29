@@ -1,10 +1,24 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import AbstractUser
 
-User = get_user_model()
+
 
 # Create your models here.
+
+class User(AbstractUser):
+    is_qualified_user = models.BooleanField('qualified status', default=False)
+
+    # user_permissions = models.ManyToManyField(
+    #     'auth.Permission',
+    #     verbose_name='user permissions',
+    #     blank=True,
+    #     related_name='custom_user_set',
+    #     related_query_name='user'
+    # )
+
+User = get_user_model()
 
 class Status(models.Model):
 
