@@ -1,6 +1,6 @@
 import requests
 from django.core.management.base import BaseCommand, CommandError
-from ...models import Controller, Sensor, ControllerData
+from ...models import Controller, ControllerData
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
@@ -17,11 +17,6 @@ class Command(BaseCommand):
                     data = data_json
                 )
 
-                # temperature = data_json['temperature']
-                # humidity = data_json['humidity']
-                #
-                # print(f"Temperature: {temperature} °C")
-                # print(f"Humidity: {humidity} %")
             except requests.exceptions.RequestException as e:
 
                 print(f"Error: {e}")

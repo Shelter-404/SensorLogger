@@ -4,11 +4,12 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import SignUpForm, ControllerCreateForm, SensorForm, LocationForm
 from .models import Location, Status, Sensor, Controller, ControllerData
 from .decorators import qualification_required
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 # Create your views here.
 class SignUpView(CreateView):
     template_name = "form.html"
@@ -32,38 +33,31 @@ class LocationView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Location.objects.exclude(status__name='Deleted')
 
-class LocationAddView(LoginRequiredMixin, CreateView):
+
+@method_decorator([login_required, qualification_required], name='dispatch')
+class LocationAddView(CreateView):
     model = Location
     form_class = LocationForm
     template_name = "form.html"
     success_url = reverse_lazy("manage")
-    # permission_required = "viewer.add_location"
 
 
 
-class ControllerAddView(LoginRequiredMixin, CreateView):
+@method_decorator([login_required, qualification_required], name='dispatch')
+class ControllerAddView(CreateView):
     model = Controller
     form_class = ControllerCreateForm
     template_name = "form.html"
     success_url = reverse_lazy("manage")
-    # permission_required = "viewer.add_controller"
 
-    # def form_valid(self, form):
-    #     # Create a new Status object
-    #     status = Status.objects.create(
-    #         added_by=self.request.user,
-    #         modified_by=self.request.user
-    #     )
-    #     # Assign the created status to the location
-    #     form.instance.status = status
-    #     return super().form_valid(form)
 
-class SensorAddView(LoginRequiredMixin, CreateView):
+@method_decorator([login_required, qualification_required], name='dispatch')
+class SensorAddView(CreateView):
     model = Sensor
     template_name = "form.html"
     form_class = SensorForm
     success_url = reverse_lazy("manage")
-    #permission_required = "viewer.add_controller"
+
 
 
 class SensorView(LoginRequiredMixin, ListView):
@@ -89,23 +83,7 @@ class DataView(LoginRequiredMixin, ListView):
         sensor_id = self.kwargs['pk']
         return ControllerData.objects.filter(controller__sensor=sensor_id)
 
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     sensor_id = self.kwargs['pk']
-    #     sensor = Sensor.objects.get(id=sensor_id)
-    #     queryset = self.get_queryset()
-    #     filtered_data = {}
-    #     for data_instance in queryset:
-    #         filtered_data[data_instance.id] = data_instance.get_filtered_data(sensor.name)
-    #
-    #     context['data'] = filtered_data
-    #     print(context)
-    #
-    #     return context
     def get_context_data(self, **kwargs):
-
-
         context = super().get_context_data(**kwargs)
         sensor_id = self.kwargs['pk']
         sensor = Sensor.objects.get(id=sensor_id)
@@ -114,15 +92,27 @@ class DataView(LoginRequiredMixin, ListView):
 
 
 
-
-
-
-
-class LocationUpdateView(LoginRequiredMixin, UpdateView):
+@method_decorator([login_required, qualification_required], name='dispatch')
+class LocationUpdateView(UpdateView):
     template_name = 'form.html'
     model = Location
     form_class = LocationForm
     success_url = reverse_lazy('locations')
+
+
+@method_decorator([login_required, qualification_required], name='dispatch')
+class CustomLocationDeleteView(DeleteView):
+    model = Location
+    success_url ="/"
+    template_name = "confirm_delete.html"
+
+    def form_valid(self, form, **kwargs):
+        location_id = self.kwargs['pk']
+        object_for_delete = Location.objects.filter(id=location_id)
+        delete_status = Status.objects.get(name="Deleted")
+        object_for_delete.update(status=delete_status)
+        return HttpResponseRedirect(self.success_url)
+
 
 class ControllerView(LoginRequiredMixin, ListView):
     template_name = "controller_list.html"
@@ -132,7 +122,8 @@ class ControllerView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Controller.objects.exclude(status__name='Deleted')
 
-class ControllerUpdateView(LoginRequiredMixin, UpdateView):
+@method_decorator([login_required, qualification_required], name='dispatch')
+class ControllerUpdateView(UpdateView):
     template_name = 'form.html'
     model = Controller
     form_class = ControllerCreateForm

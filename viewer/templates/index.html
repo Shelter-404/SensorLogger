@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <a href="{% url 'login' %}">LogIn</a>
-
+<br>
 <a href="{% url 'signup' %}">SignUp</a>
+<br>
 
-<a href="{% url 'home' %}">Home</a>
+{% if user.is_authenticated and user.is_qualified_user %}
+      <a href="{% url 'home' %}">Home</a>
+{% else %}
+    <a href="{% url 'locations' %}">Locations</a>
+{% endif %}
+
 {% endblock %}

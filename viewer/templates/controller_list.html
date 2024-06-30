@@ -18,6 +18,7 @@
         <td>{{ controller.description }}</td>
         <td><a href="{% url 'sensors' controller.pk %}">Sensors</a></td>
         <td><a href="{% url 'edit_controller' controller.pk %}">Edit</a></td>
+        <td><a href="{% url 'edit_controller' controller.pk %}">Delete</a></td>
     </tr>
     {% endfor %}
 </table>

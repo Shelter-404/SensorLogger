@@ -48,4 +48,5 @@ urlpatterns = [
     path('edit/controller/<int:pk>', views.ControllerUpdateView.as_view(), name='edit_controller'),
     path('edit/sensor/<int:pk>', views.SensorUpdateView.as_view(), name='edit_sensor'),
     path('delete/sensor/<int:pk>', views.CustomSensorDeleteView.as_view(), name='delete_sensor'),
+    path('delete/location/<int:pk>', views.CustomLocationDeleteView.as_view(), name='delete_location'),
 ]
