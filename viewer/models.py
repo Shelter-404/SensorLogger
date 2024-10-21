@@ -1,10 +1,16 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import AbstractUser
 
-User = get_user_model()
+
 
 # Create your models here.
+
+class User(AbstractUser):
+    is_qualified_user = models.BooleanField('qualified status', default=False)
+
+User = get_user_model()
 
 class Status(models.Model):
 
@@ -50,3 +56,7 @@ class ControllerData(models.Model):
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE, related_name="data")
     data = models.JSONField(null=False, blank=False)
     added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.added}"
+

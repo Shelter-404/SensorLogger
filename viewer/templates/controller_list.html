@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Locations table</h1>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>IP</td>
+        <td>Status</td>
+        <td>Location</td>
+        <td>Description</td>
+    </tr>
+    {% for controller in object_list %}
+    <tr>
+        <td>{{ controller.name }}</td>
+        <td>{{ controller.ip_address }}</td>
+        <td>{{ controller.status }}</td>
+        <td>{{ controller.location }}</td>
+        <td>{{ controller.description }}</td>
+        <td><a href="{% url 'sensors' controller.pk %}">Sensors</a></td>
+        <td><a href="{% url 'edit_controller' controller.pk %}">Edit</a></td>
+        <td><a href="{% url 'edit_controller' controller.pk %}">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'home' %}">Back home</a>
+{% endblock %}

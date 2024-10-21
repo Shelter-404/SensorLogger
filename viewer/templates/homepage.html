@@ -2,6 +2,7 @@
 {% block content %}
 <a href="{% url 'locations' %}">Locations</a>
 <br>
-<a href="{% url 'manage' %}">Management</a>
-
+{% if user.is_authenticated and user.is_qualified_user %}
+      <a href="{% url 'manage' %}">Management</a>
+{% endif %}
 {% endblock %}
