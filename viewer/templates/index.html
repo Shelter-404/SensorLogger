@@ -1,8 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{% url 'login' %}">LogIn</a>
+<style>
+    a:link {
+    color: white;
+    font-family: verdana;
+    text-decoration: none;
+    margin: 0.6em;
+    background-color: #5fd2d4;
+    padding: 0.2em;
+    border-radius: 4px;
+    }
+    a:visited{
+    color: white;
+    }
+    a:active{
+    color: white;
+    }
+    div{
+    background-color: #faebd7;
+    padding: 0.5em;
+    }
+</style>
+<div style="text-align: right;">
+    <nav>
+        <a href="{% url 'login' %}">LogIn</a>
 
-<a href="{% url 'signup' %}">SignUp</a>
+        <a href="{% url 'signup' %}">SignUp</a>
 
-<a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'home' %}">Home</a>
+    </nav>
+</div>
 {% endblock %}
